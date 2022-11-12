@@ -87,6 +87,46 @@ body, p {
   font-weight: 400;
 }
 
+.input,
+.textarea {
+  border: 1px solid #ccc;
+  font-family: inherit;
+  font-size: inherit;
+  padding: 6px 6px;
+}
+
+.input-wrap {
+  position: relative;
+}
+.input-wrap .input {
+  position: absolute;
+  width: 100%;
+  left: 0;
+}
+.width-machine {
+  /*   Sort of a magic number to add extra space for number spinner */
+  padding: 0 1rem;
+}
+
+.textarea {
+  display: block;
+  width: 80%;
+  overflow: hidden;
+  resize: both;
+  min-height: 40px;
+  line-height: 18px;
+}
+
+.textarea[contenteditable]:empty::before {
+  color: gray;
+}
+
+#button_drive, #Transit, #walking{
+  background-color: white;
+  font-size:xx-small;
+  padding: 0px;
+}
+
 html {
   overflow-x: hidden;
   width: 100%;
@@ -207,21 +247,43 @@ blockquote {
   text-align: center;
 }
 
+.fa-trash:hover{
+  color: #ce8460;
+}
+
 /* Button */
 .btn {
   border-radius: 0px;
   padding: 10px 30px;
   font-weight: 600;
   text-transform: uppercase;
-  color: #fff;
+  color: #474545;
   transition: 350ms;
   letter-spacing: 1px;
   font-size: 13px;
   border: 1px solid transparent;
 }
 
+.btn-pink{
+  background: #FFBB98;
+}
+
+.btn-new-grey{
+  background: #e0e0e0;
+}
+
+.btn-new-grey:hover{
+  background: #000;
+  color: #fff;
+  border-color: #000;
+}
+
+
+
 .btn-primary {
   background: #ce8460;
+  color: white;
+
 }
 .btn-primary:hover {
   background: #000;
@@ -1434,85 +1496,3 @@ footer
   }
 }
 /*# sourceMappingURL=style.css.map */
-
-/* for restrictions */
-/* Container holding the image and the text */
-.container {
-  position: relative;
-}
-
-/* Bottom right text */
-.text-block {
-  position: absolute;
-  bottom: 20px;
-  left: 20px;
-  background-color: black;
-  color: white;
-  padding-left: 20px;
-  padding-right: 20px;
-}
-
-.jumbo {
-  background-color: #b0c4de;
-}
-
-.jumbobox {
-background-color: #fbe0c3;
-}
-
-#btncolour {
-background-color: #ffbb98;
-}
-
-#next_button {
-background-color: #798e95;
-}
-
-.heading_colour {
-color: #344648;
-font-weight: bold;
-}
-
-.test-style {
-  display:inline-block;
-}
-
-
-/*flip card*/
-.card-flip > div {
-  backface-visibility: hidden;
-  transition: transform 300ms;
-  transition-timing-function: linear;
-  width: 100%;
-  height: 100%;
-  margin: 0;
-  display: flex;
-}
-
-.card-front {
-  transform: rotateY(0deg);
-}
-
-.card-back {
-  transform: rotateY(180deg);
-  position: absolute;
-  top: 0;
-}
-
-.card-flip:hover .card-front {
-  transform: rotateY(-180deg);
-}
-  
-.card-flip:hover .card-back {
-  transform: rotateY(0deg);
-}
-
-.scroll {
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.scroll_new_height {
-  max-height: 300px;
-  overflow-y: auto;
-}
