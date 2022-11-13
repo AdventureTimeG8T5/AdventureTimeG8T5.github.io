@@ -51,7 +51,7 @@ function call_all_airlines_api() {
         method: 'GET',
         url: 'https://iata-and-icao-codes.p.rapidapi.com/airlines',
         headers: {
-            'X-RapidAPI-Key': '890cb1b4c6mshcd940a491c340d9p1ab5a5jsn14faf23b9e1f',
+            'X-RapidAPI-Key': '4f7618f0c7msh976688b82e5bb70p1973d0jsn25598be7fb57',
             'X-RapidAPI-Host': 'iata-and-icao-codes.p.rapidapi.com'
         }
     };
@@ -111,41 +111,19 @@ function call_schedule_api() {
     let departureflightno = dcode + document.getElementById("floatingFrom").value;
     let departuredate = document.getElementById("fromdt").value;
 
-    let acode = document.getElementById("airlineT").value;
-    let arrivalflightno = acode + document.getElementById("floatingTo").value;
-    let arrivaldate = document.getElementById("todt").value;
-    console.log(departureflightno);
-    console.log(arrivalflightno);
-
     let result = new Date().toISOString().slice(0, 10);
 
     const options = {
         method: 'GET',
         url: `https://aerodatabox.p.rapidapi.com/flights/number/${departureflightno}/${result}`,
         headers: {
-            'X-RapidAPI-Key': '890cb1b4c6mshcd940a491c340d9p1ab5a5jsn14faf23b9e1f',
+            'X-RapidAPI-Key': '4f7618f0c7msh976688b82e5bb70p1973d0jsn25598be7fb57',
             'X-RapidAPI-Host': 'aerodatabox.p.rapidapi.com'
         }
     };
 
-    const options1 = {
-        method: 'GET',
-        url: `https://aerodatabox.p.rapidapi.com/flights/number/${arrivalflightno}/${result}`,
-        headers: {
-            'X-RapidAPI-Key': '890cb1b4c6mshcd940a491c340d9p1ab5a5jsn14faf23b9e1f',
-            'X-RapidAPI-Host': 'aerodatabox.p.rapidapi.com'
-        }
-    };
-
-    myFunction();
     let table = document.getElementById("searchresult");
     table.innerHTML = "";
-    table.innerHTML += `<tr>
-                <th> Flight Number</th>
-                <th>Departure Airport & Time</th>
-                <th>Arrival Airport & Time</th>
-                </tr> `;
-
 
     // 2) Use Axios to call API asynchronously
     axios.request(options)
@@ -164,17 +142,43 @@ function call_schedule_api() {
             let atime = records[0].arrival.scheduledTimeLocal;
             let newatime = atime.slice(11, 16);
 
-            table.innerHTML += `<tr><td><span id='dd_flight'>${departureflightno}</span></td>
+            let string = `<tr><td><span id='dd_flight'>${departureflightno}</span></td>
                         <td><span id='dd_airport'>${records[0].departure.airport.name}</span>
                         <span id='dd_time'>${newdtime}</span></td>
                         <td><span id='da_airport'>${records[0].arrival.airport.name}</span>
                         <span id='da_time'>${newatime}</span></td>
                         </tr>`
+
+            call_schedule_api2(string);
         })
         .catch(function (error) {
             // In case of any error, see what it's about
             console.log(error)
+            document.getElementById("flighterrormsg").style.display = "block";
+            document.getElementById("flighterrormsg").innerHTML = "<h4>Invalid departure flight number</h4><br><br>";
         })
+
+    console.log("**** [END] call_schedule_api() *****")
+}
+
+function call_schedule_api2(depart_result) {
+
+    console.log("**** [START] call_schedule_api2() *****")
+
+    let table = document.getElementById("searchresult");
+    let acode = document.getElementById("airlineT").value;
+    let arrivalflightno = acode + document.getElementById("floatingTo").value;
+
+    let result = new Date().toISOString().slice(0, 10);
+
+    const options1 = {
+        method: 'GET',
+        url: `https://aerodatabox.p.rapidapi.com/flights/number/${arrivalflightno}/${result}`,
+        headers: {
+            'X-RapidAPI-Key': '4f7618f0c7msh976688b82e5bb70p1973d0jsn25598be7fb57',
+            'X-RapidAPI-Host': 'aerodatabox.p.rapidapi.com'
+        }
+    };
 
     axios.request(options1)
         .then(function (response) {
@@ -190,6 +194,15 @@ function call_schedule_api() {
             let atime = records[0].arrival.scheduledTimeLocal;
             let newatime = atime.slice(11, 16);
 
+            myFunction();
+            table.innerHTML += `<tr>
+                <th>Flight Number</th>
+                <th>Departure Airport & Time</th>
+                <th>Arrival Airport & Time</th>
+                </tr> `;
+
+            table.innerHTML += depart_result;
+
             table.innerHTML += `<tr><td><span id='rd_flight'>${arrivalflightno}</span></td>
                         <td><span id='rd_airport'>${records[0].departure.airport.name}</span> 
                         <span id='rd_time'>${newdtime}</span></td>
@@ -200,11 +213,11 @@ function call_schedule_api() {
         .catch(function (error) {
             // In case of any error, see what it's about
             console.log(error)
+            document.getElementById("flighterrormsg").style.display = "block";
+            document.getElementById("flighterrormsg").innerHTML = "<h4>Invalid return flight number</h4><br><br>";
         })
 
-
-
-    console.log("**** [END] call_schedule_api() *****")
+    console.log("**** [END] call_schedule_api2() *****")
 }
 
 function country_list() {
@@ -216,7 +229,7 @@ function country_list() {
         method: 'GET',
         url: 'https://city-list.p.rapidapi.com/api/getCountryList',
         headers: {
-            'X-RapidAPI-Key': '890cb1b4c6mshcd940a491c340d9p1ab5a5jsn14faf23b9e1f',
+            'X-RapidAPI-Key': '4f7618f0c7msh976688b82e5bb70p1973d0jsn25598be7fb57',
             'X-RapidAPI-Host': 'city-list.p.rapidapi.com'
         }
     };
@@ -260,7 +273,7 @@ function city_list() {
         method: 'GET',
         url: 'https://city-list.p.rapidapi.com/api/getCity/' + city,
         headers: {
-            'X-RapidAPI-Key': '890cb1b4c6mshcd940a491c340d9p1ab5a5jsn14faf23b9e1f',
+            'X-RapidAPI-Key': '4f7618f0c7msh976688b82e5bb70p1973d0jsn25598be7fb57',
             'X-RapidAPI-Host': 'city-list.p.rapidapi.com'
         }
     };
@@ -307,8 +320,8 @@ function call_hotel_api() {
         url: 'https://booking-com.p.rapidapi.com/v1/hotels/locations',
         params: { locale: 'en-gb', name: input },
         headers: {
-            'X-RapidAPI-Key': '890cb1b4c6mshcd940a491c340d9p1ab5a5jsn14faf23b9e1f',
-            'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
+            'X-RapidAPI-Key': 'd476316f40msh335b915d4cd836ep140697jsnb10f214fe0da',
+			'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
         }
     };
 
@@ -338,8 +351,8 @@ function call_hotel_api() {
                     room_number: '1'
                 },
                 headers: {
-                    'X-RapidAPI-Key': '890cb1b4c6mshcd940a491c340d9p1ab5a5jsn14faf23b9e1f',
-                    'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
+                    'X-RapidAPI-Key': 'd476316f40msh335b915d4cd836ep140697jsnb10f214fe0da',
+					'X-RapidAPI-Host': 'booking-com.p.rapidapi.com'
                 }
             };
 
@@ -413,13 +426,13 @@ function insertTripDetails() {
         let da_time = document.getElementById("da_time").innerText;
 
         depature_details = {
-            'departure-airlines': airlinesfrom, 'departure-flight-number': flightfrom, 'departure-date': fromdate,
-            'depart-airport': rd_airport, 'depart-time': rd_time, 'arrival-airport': ra_airport, 'arrival-time': ra_time
+            'arrival_airlines': airlinesfrom, 'arrival_flight_number': flightfrom, 'arrival_date': todate,
+            'depart_airport': rd_airport, 'depart_time': rd_time, 'arrival_airport': ra_airport, 'arrival_time': ra_time
         };
 
         arrival_details = {
-            'arrival-airlines': airlinesto, 'arrival-flight-number': flightto, 'arrival-date': todate,
-            'depart-airport': dd_airport, 'depart-time': dd_time, 'arrival-airport': da_airport, 'arrival-time': da_time
+            'departure_airlines': airlinesto, 'departure_flight_number': flightto, 'departure_date': fromdate,
+            'depart_airport': dd_airport, 'depart_time': dd_time, 'arrival_airport': da_airport, 'arrival_time': da_time
         };
     }
 
@@ -428,13 +441,17 @@ function insertTripDetails() {
         let fromhoteldate = document.getElementById("fromstay").value;
         let tohoteldate = document.getElementById("tostay").value;
 
-        hotellist = { 'hotel': hotel, 'start-date': fromhoteldate, 'end-date': tohoteldate };
+        hotellist = { 'hotel': hotel, 'start_date': fromhoteldate, 'end_date': tohoteldate };
     }
 
     let id = startdate + country.slice(0, 3) + city.slice(0, 3);
 
     writeUserDataWithCompletion(id, country, city, startdate, enddate, depature_details, arrival_details, hotellist);
     sessionStorage.setItem("country", country);
+    sessionStorage.setItem("city", city);
+    sessionStorage.setItem("departdate", startdate);
+    sessionStorage.setItem("returndate", enddate);
+    sessionStorage.setItem("tripId", id);
 }
 
 //The following writes the data

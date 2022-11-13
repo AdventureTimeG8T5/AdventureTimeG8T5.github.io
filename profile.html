@@ -40,6 +40,11 @@
     <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-database.js"></script>
     <!-- This is the API from Firebase Storage -->
     <script src="https://www.gstatic.com/firebasejs/8.8.1/firebase-storage.js"></script>
+    <style>
+        body {
+            overflow-x: hidden !important;
+        }
+    </style>
 </head>
 
 <body onload="checkLogin()">
@@ -62,6 +67,9 @@
                         </li>
                         <li class="nav-item mx-2">
                             <a href="createtrip.html" class="nav-link text-white">Add New Trip</a>
+                        </li>
+                        <li class="nav-item mx-2">
+                            <a href="new_restrictions.html" class="nav-link text-white">Restrictions</a>
                         </li>
                         <li class="nav-item mx-2">
                             <a href="profile.html" class="nav-link text-white">Profile</a>
@@ -92,21 +100,21 @@
                             <br><br>
                             <div class="form-row text-center">
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-primary" onclick="editProfile()">Edit</button>
+                                    <button type="submit" class="btn" style="background-color:#ce8460;" onclick="editProfile()">Edit Profile Picture</button>
                                 </div>
                             </div>
                         </div>
                         <div id="edit" style="display:none">
                             <p id="usernameedit" class="text-center"></p>
-                            Update profile image :<br>
+                            Update profile picture:<br>
                             <input type="file" id="files" name="files[]" multiple />
                             <br><br>
                             <label for="newemail">Email :</label><br>
-                            <input type="email" id="newemail" class="w-100">
+                            <input type="email" id="newemail" class="w-100" disabled>
                             <br><br>
                             <div class="form-row text-center">
                                 <div class="col-12">
-                                    <button type="submit" class="btn btn-primary"
+                                    <button type="submit" class="btn" style="background-color:#ce8460;"
                                         onclick="updateProfile()">Change</button>
                                 </div>
                             </div>
@@ -118,7 +126,7 @@
                 <div class="profile-page">
                     <div id="initial" class="col-md-12 d-flex">
                         <h1>My Trip</h1>
-                        <button class="btn btn-primary ml-auto" type="button"
+                        <button class="btn ml-auto" type="button" style="background-color:#ce8460;"
                             onclick="window.location.href='createtrip.html';">Create trip NOW</button>
                     </div>
                 </div>
@@ -142,26 +150,30 @@
             </div>
         </div>
     </div>
+    <br><br>
 
 
     <!--footer-->
-    <section class="footer-2 section-padding gray-bg pb-3">
+    <section class="footer-2 section-padding gray-bg pb-5 px-3">
         <div class="row">
             <!-- Grid column -->
             <div class="col-md-3 col-lg-4 col-xl-4 mx-auto mt-3">
-                <h4 class="mb-4 font-weight-bold">
+                <h4 class="mb-4 font-weight-bold" style="line-height: 28px;">
                     <i class="fa fa-map-marker fx-2" aria-hidden="true"></i>
-                    <span style="color:#575769">81 Victoria St, Singapore 188065</span>
+                    <span style="color:#575769; font-family: 'Unna', serif;font-weight: 600;font-size: 20px;">81
+                        Victoria St, Singapore 188065</span>
                 </h4>
                 <br>
                 <h4 class="mb-4 font-weight-bold">
                     <i class="fa fa-phone fx-2" aria-hidden="true"></i>
-                    <span style="color:#575769">+65 6782 9653</span>
+                    <span style="color:#575769; font-family: 'Unna', serif;font-weight: 600;font-size: 20px;">+65 6782
+                        9653</span>
                 </h4>
                 <br>
-                <h4 class="mb-4 font-weight-bold">
+                <h4 class="mb-4 font-weight-bold" style="line-height: 28px;">
                     <i class="fa fa-envelope fx-2" aria-hidden="true"></i>
-                    <span style="color:#575769">support@adventuretime.com</span>
+                    <span
+                        style="color:#575769; font-family: 'Unna', serif;font-weight: 600;font-size: 20px;">adventuretimeis216@gmail.com</span>
                 </h4>
             </div>
             <!-- Grid column -->
@@ -173,18 +185,17 @@
 
             <!-- Grid column -->
             <div class="col-md-4 col-lg-3 col-xl-3 mx-auto mt-1 mb-1">
-                <h2 class="mb-4 font-weight-bold">About the company</h2>
-                <p>Feeling motivated to travel during these pandemic times, we have founded Adventure Time to help
+                <h2 class="mb-4 font-weight-bold" style="color: #1c1c1c;font-family: 'Unna', serif; text-align: left">
+                    About the company</h2>
+                <p>Feeling motivated to travel during these pandemic times, we have founded Adventure Time to
+                    help
                     potential travellers to travel with ease!</p>
-                <a href="#"><i class="fa fa-instagram fa-2x" aria-hidden="true"></i></a>&nbsp
-                <a href="#"><i class="fa fa-facebook fa-2x" aria-hidden="true"></i></a>&nbsp
-                <a href="#"><i class="fa fa-twitter fa-2x" aria-hidden="true"></i></a>&nbsp
-                <a href="#"><i class="fa fa-youtube-play fa-2x" aria-hidden="true"></i></a>
+                <a href="#"><i class="fa fa-instagram fa-2x" aria-hidden="true" style="color: #000;"></i></a>&nbsp
+                <a href="#"><i class="fa fa-facebook fa-2x" aria-hidden="true" style="color: #000;"></i></a>&nbsp
+                <a href="#"><i class="fa fa-twitter fa-2x" aria-hidden="true" style="color: #000;"></i></a>&nbsp
+                <a href="#"><i class="fa fa-youtube-play fa-2x" aria-hidden="true" style="color: #000;"></i></a>
             </div>
-
-
         </div>
-
     </section>
 
 
@@ -221,6 +232,19 @@
         }
         console.log(localStorage.getItem('uid'))
         let userid = localStorage.getItem('uid');
+        
+        function openItinerary(item) {
+            sessionStorage.setItem("tripId",item);
+            window.location.href = 'itinerary/itinerary.html';
+        }
+
+        let logout = document.getElementById('logout')
+        logout.addEventListener('click', logout1)
+        function logout1() {
+            localStorage.removeItem('uid')
+            sessionStorage.setItem('logout', true)
+            window.location.href = 'index.html'
+        };
     </script>
 
     <script type="module">
@@ -257,17 +281,6 @@
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const auth = getAuth();
-        document.getElementById('logout')
-            .addEventListener('click', function () {
-                signOut(auth).then(() => {
-                    alert("Sign out successful")
-                    localStorage.removeItem('uid')
-                    window.location.href = 'home1.html';
-                }).catch((error) => {
-                    // An error happened.
-                    console.log(error);
-                });
-            });
     </script>
 </body>
 

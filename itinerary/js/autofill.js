@@ -24,6 +24,8 @@ function fill_origin(){
               document.getElementById('recommended_track').value=track
               fill_info(track)
               fill_rec(track)
+              let category = document.getElementsByClassName('category')[track]
+              category.addEventListener('change',fill_rec)
             }
             track+=1
         }
@@ -66,11 +68,10 @@ function fill_template(){
             <div id="flush-collapseOne" class="accordion-collapse collapse" aria-labelledby="flush-headingOne" data-bs-parent="#accordionFlushExample">
                 <div class="accordion-body "> 
                     <div class="row d-flex">
-                        <div class="col-12">
                           <!------------- SEARCH BOX ------------->
 
                           <!--PLACE INFO START-->
-                           <div class="place_info"></div>
+                          <div class="place_info"></div>
 
                           <!--ADD PLACE INPUT BOX-->
                           <div class="search-box mb-2 ">
@@ -78,11 +79,10 @@ function fill_template(){
                             <br>
                             
                             <div class="row recommend_header"></div>
-                            <div class="recommended" ></div>
+                            <div class="recommended"></div>
 
                           </div>
-                          <br>                       
-                        </div> <!--end col-->
+                          <br>
                     </div> <!--end row-->
                 </div> <!--end accordion body-->
             </div> <!--end accordion collaspe-->
@@ -280,8 +280,6 @@ document.getElementsByClassName('recommend_header')[track].innerHTML = `
                             </select>
                           </div>
 `
-let category = document.getElementsByClassName('category')[track]
-category.addEventListener('change',fill_rec)
 }
 
 let id = document.getElementById('place_id').value
@@ -303,6 +301,7 @@ service = new google.maps.places.PlacesService(map);
 service.getDetails(request, callback);
 
 function callback(place, status) {
+
   if (status == google.maps.places.PlacesServiceStatus.OK) {
     if(place.photos[0] != undefined){
       picture_url = place.photos[0].getUrl({
@@ -315,6 +314,7 @@ function callback(place, status) {
    for(let i=0;i<10;i++){
     id_rep = id_rep.replace('-','_')
    }
+   console.log(id_rep,"ID REPP EHRE")
    fill.id = id_rep + 'row'
    fill.className = "container";
    fill.innerHTML = `
@@ -341,27 +341,42 @@ function callback(place, status) {
     </div>
     
     <div class="col-8"> 
+
+      <div class="row">
+          <!------------- Budget ------------------>
+
+        <div class="col-10">
+          <div class="input-group mb-3">
+              <span class="input-group-text">Budget</span>
+              <input type="number" class="form-control" placeholder="Add budget" aria-label="budget" id="${id_rep+'budget'}">
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row">
+        <!------------- Time ------------------>
+        <div class="col-10">
+          <div class="input-group mb-3 w-80">
+            <span class="input-group-text">Time</span>
+            <input type="text" class="form-control" placeholder="Add time" aria-label="time" 'time'" id="${id_rep+'time'}">
+          </div>
+        </div>
+      </div>
+
       <div class="row">
   
         <!------------- NOTE ------------------>
-        <div class="col-6">
-          <button class="btn btn-new-grey mb-3" href="#" onClick="addFormField(${id_rep+'notes1'}); return false;">+Note &nbsp;<i class="fa fa-sticky-note"></i></button>
+        <div class="col-10 mx-0">
+          <div class="d-flex">
+          <i class="fa fa-sticky-note"> Add Notes: </i>
+            <br>
+            <div class="textarea mx-1" id=${id_rep+'notes2'} contenteditable "></div>
+          </div><br>
           <br>
-          <form action="#" method="get" id="form1">
-            <input type="hidden" id=${id_rep+'notes1'}>
-            <div class="divTxt" id=${id_rep+'notes2'}></div>
-          </form>
         </div>
   
-        <!-------------CHECKLIST -------------->
-        <div class="col-6">
-          <button class="btn btn-new-grey  mb-3" href="#" onClick="addCheckbox(${id_rep+'check1'}); return false;">+Checklist &nbsp;<i class="fa fa-check-square"></i></button>
-          <br>
-          <form action="#" method="get" id="form2">
-          <input type="hidden" id=${id_rep+'check1'}>
-          <div class="divCheckBox" id=${id_rep+'check2'}></div>
-          </form>
-        </div>
+        
         <div hidden class='getAllVal'>${id},${id_rep+'row'},${name},${lati},${lng},${picture_url},${track}</div>
       </div>
     </div>
@@ -374,9 +389,9 @@ function callback(place, status) {
   }
   }
 
+  
+
 function removePlace(id){
-console.log('hello')
-console.log(id)
 document.getElementById(id.id).remove()
 }
 
@@ -418,101 +433,119 @@ let name = ''
 let photo = ''
 let fill = ""
 fill.innerHTML = ''
-let first = true
 var indx = 0
 var active_status = "active"
 let carouselnum = document.getElementById('carousel_num').innerHTML
 let id = 'carouselExampleControls'+ carouselnum
-let id2 = '#carouselExampleControls'+carouselnum
+let id2 = '#carouselExampleControls'+ carouselnum
 fill += `
-  <div>
-    <div id=${id} class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-inner">
+  <div id=${id} class="carousel slide" data-bs-ride="carousel">
+    <div class="carousel-inner">
   `
+var 
+count_of_card = 1
 
 for(item of results){
+  
+  // Labelling the items
   place_id = item.place_id
   name = item.name
   if(item.photos != undefined){
     photo = item.photos[0].getUrl({})
   }
   
+  // Checking the active status
   if(indx !== 0){
     active_status = ""
   }
 
-  if(first){
-    indx ++
-    first = false
+  if(count_of_card === 1){
+    
+    //carousel-item "active"
+    //card 1
+    //count_of_card ++
+
     fill += `
-    <div class="carousel-item ${active_status}" >
-      <div class ="d-flex">
-        <div class="col-6">
+    <div class="carousel-item ${active_status} mt-2" >
+      <div class ="card-group">
 
-          <!--This is the start of the card-->
-          <div class="card mb-3" >
-            <div class="row g-0" >
-
-              <div class="col-6">
-              <img alt="Card image cap" class="card" style='width:150px; height: 150px' src="${photo}" />
-              </div>
-
-              <div class="col-6">
-                <div class="card-body" >
-                    <p class="card-title">
-                      ${name}
-                    </p>
-                    <button value=${place_id} onclick='add_rec(this,${num})' class="btn btn-primary  btn-sm" type="submit" class="add_recommend">ADD!</button>
-                </div>
-              </div>
-
-            </div>
+      <div class="card border rounded mb-0 h-100 rounded">
+      <div class="card-row d-flex g-0 h-100 w-100">
+          <div class="col-md-4 p-0">
+              <img src="${photo}" class="rounded" alt="...">
           </div>
-          <!--This is the end of the card-->
-        </div>
-`
-  }
-  else{
-    fill += `
-      <div class= "col-6">
-        <!--Start of second card-->
-        <div class="card mb-3" >
-          <div class="row g-0" >
-
-            <div class="col-6">
-              <img alt="Card image cap" class="card" style='width:150px; height: 150px' src="${photo}" />
-            </div>
-            
-            <div class="col-6">
-              <div class="card-body" >
-                    <p class="card-title">${name}</p>
-                    <button value=${place_id} onclick='add_rec(this,${num},${id})' class="btn btn-primary  btn-sm" style="position:absolute; type="submit" class="add_recommend">ADD!</button>
+          <div class="col-md-7 px-2">
+              <div class="card-body p-1">
+                  <h5 class="card-title text-truncate mb-0">${name}</h5>
+                  <button value=${place_id} onclick='add_rec(this,${num},${id})' class="btn btn-primary  btn-sm p-1" style="font-size:10px;position:absolute; type="submit" class="add_recommend">ADD!</button>
               </div>
-            </div>
-
           </div>
-        </div>
-      <!--End of card-->
-      
       </div>
-      <!--closing the col-6-->
-    </div>
-  </div>`
-  first = true
-  }
+    </div>`
+  
+    count_of_card++
+  } else if (count_of_card===2){
 
+    //card 2
+    //count_of_card ++
+    fill += `
+    <div class="card border rounded mb-0 h-100 rounded">
+      <div class="card-row d-flex g-0 h-100 w-100">
+          <div class="col-md-4 p-0">
+              <img src="${photo}" class="rounded" alt="...">
+          </div>
+          <div class="col-md-7 px-2">
+              <div class="card-body p-1">
+                  <h5 class="card-title text-truncate mb-0">${name}</h5>
+                  <button value=${place_id} onclick='add_rec(this,${num},${id})' class="btn btn-primary  btn-sm  p-1 fs-7" style="font-size:10px;position:absolute; type="submit" class="add_recommend">ADD!</button>
+              </div>
+          </div>
+      </div>
+    </div>
+    `
+    count_of_card++
+  } else {
+    //card 3
+    //End of carousel-item
+    //count_of_card =1
+    fill += `
+        <div class="card border rounded mb-0 h-100 rounded">
+          <div class="card-row d-flex g-0 h-100 w-100">
+              <div class="col-md-4 p-0">
+                  <img src="${photo}" class="rounded" alt="...">
+              </div>
+              <div class="col-md-7 px-2">
+                  <div class="card-body p-1">
+                      <h5 class="card-title text-truncate mb-0">${name}</h5>
+                      <button value=${place_id} onclick='add_rec(this,${num},${id})' class="btn btn-primary  btn-sm  p-1 fs-7" style="font-size:10px;position:absolute; type="submit" class="add_recommend">ADD!</button>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <!--Individual card End-->
+
+      </div>
+      <!--Card group per slider End-->
+    </div>
+    `
+    count_of_card =1
+  }
+  indx++
 }
 fill +=  `
         </div>
+        </div>
+
           <button class="carousel-control-prev" type="button" data-bs-target=${id2} data-bs-slide="prev">
             <span class="carousel-control-prev-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Previous</span>
           </button>
+
           <button class="carousel-control-next" type="button" data-bs-target=${id2} data-bs-slide="next">
             <span class="carousel-control-next-icon" aria-hidden="true"></span>
             <span class="visually-hidden">Next</span>
           </button>
-          </div>
+
         </div>`
 parent.innerHTML = fill
 document.getElementById('carousel_num').innerHTML = Number(document.getElementById('carousel_num').innerHTML) + 1
@@ -559,62 +592,75 @@ function callback(place, status) {
    for(let i=0;i<10;i++){
     id_rep = id_rep.replace('-','_')
    }
-   console.log(id_rep)
+   console.log(id_rep, "id rep here2 ")
    let name = place.name
    let fill = document.createElement('div');
    fill.id = id_rep + 'row'
    fill.className = "container";
    fill.innerHTML = `
-   <div class="row my-2" id=''>
-     <div class="col mb-2 rounded p-3 bg-light" >
-       <h3>
-          ${name}
-           <span style='float:right' class='fa fa-trash ' onClick="removePlace(${id_rep+'row'})"></span>
-       </h3>
-     <div>
-     
-   </div>
-  
-  <div class="row" > 
-   <div class="col-4">
-     <img src=${picture_url} alt="" style="width: 150px; height: 150px;">
-     <br>
-     <div hidden class='get_distance'>${id},${lati},${lng}</div>
-     <p>
-     <button value=${id} onclick='getDistance_Drive(this)' class="btn" id="button_drive"><i class="fa fa-car"></i>car</button>
-     <button value=${id} onclick='getDistance_transit(this)' class="btn " id ='Transit'><i class="fa fa-subway"></i>public transport</button>
-     <button value=${id} onclick='getDistance_walk(this)' class="btn" id="walking"><i class="fas fa-walking"></i>walking</button>
-   
-     <div class="distance" id=${id}></div>
-     </p>
-   </div>
-  
-   <div class="col-8"> 
-     <div class="row">
-  
-       <div class="col-6">
-         <!------------- NOTE ------------------>
-         <button class="btn btn-new-grey mb-3" href="#" onClick="addFormField(${id_rep+'notes1'}); return false;">+Note &nbsp;<i class="fa fa-sticky-note"></i></button>
-         <br>
-         <form action="#" method="get" id="form1">
-           <input type="hidden" id=${id_rep+'notes1'}>
-           <div class="divTxt" id=${id_rep+'notes2'}></div>
-         </form>
-       </div>
-  
-       <!-------------CHECKLIST -------------->
-       <div class="col-6">
-         <button class="btn btn-new-grey mb-3" href="#" onClick="addCheckbox(${id_rep+'check1'}); return false;">+Checklist &nbsp;<i class="fa fa-check-square"></i></button>
-         <br>
-         <form action="#" method="get" id="form2">
-          <input type="hidden" id=${id_rep+'check1'}>
-          <div class="divCheckBox" id=${id_rep+'check2'}></div>
-         </form>
-       </div>
-       
-     </div>
-   </div>
-   </div>
+    <div class="row my-2">
+    <div class="col mb-2 rounded p-3 bg-light" >
+      <h3>${name}
+        <span style='float:right' class='fa fa-trash ' onClick="removePlace(${id_rep+'row'})"></span>
+      </h3>
+    <div>
+  </div>
+  <div class="row">
+
+  <div class="col-4">
+    <img src=${picture_url} alt="" style="width: 150px; height: 150px;">
+    <br>
+    <div hidden class='get_distance'>${id},${lati},${lng}</div>
+    <p>
+    <button value=${id} onclick='getDistance_Drive(this)' class="btn" id="button_drive"><i class="fa fa-car"></i>car</button>
+    <button value=${id} onclick='getDistance_transit(this)' class="btn " id ='Transit'><i class="fa fa-subway"></i>public transport</button>
+    <button value=${id} onclick='getDistance_walk(this)' class="btn" id="walking"><i class="fas fa-walking"></i>walking</button>
+
+    <div class="distance" id=${id}></div>
+    </p>
+  </div>
+
+  <div class="col-8"> 
+
+    <div class="row">
+        <!------------- Budget ------------------>
+
+      <div class="col-10">
+        <div class="input-group mb-3">
+            <span class="input-group-text">Budget</span>
+            <input type="number" class="form-control" placeholder="Add budget" aria-label="budget" id="${id_rep+'budget'}">
+        </div>
+      </div>
+
+    </div>
+
+    <div class="row">
+      <!------------- Time ------------------>
+      <div class="col-10">
+        <div class="input-group mb-3 w-80">
+          <span class="input-group-text">Time</span>
+          <input type="text" class="form-control" placeholder="Add time" aria-label="time" id="${id_rep}time">
+        </div>
+      </div>
+    </div>
+
+    <div class="row">
+
+    <!------------- NOTE ------------------>
+        <div class="col-10 mx-0">
+          <div class="d-flex">
+          <i class="fa fa-sticky-note"> Add Notes: </i>
+            <br>
+            <div class="textarea mx-1" id=${id_rep+'notes2'} contenteditable "></div>
+          </div><br>
+          <br>
+        </div>
+
+      
+      <div hidden class='getAllVal'>${id},${id_rep+'row'},${name},${lati},${lng},${picture_url},${track}</div>
+    </div>
+  </div>
+  </div>
   </div>
   `
    //let parent = document.getElementById('place_info')
@@ -622,71 +668,41 @@ function callback(place, status) {
    console.log(parent)
    parent.appendChild(fill)
   }
-  }
-  }
-
-function addFormField(id) {
-    console.log(id)
-    id_origin = id
-    id = id.id
-    id2 = id.slice(0,id.length-1) +'2'
-    to_add = document.createElement('div')
-    to_add.className = 'input_field' + id_origin.id
-    
-    current_input = document.getElementsByClassName('input_field' + id_origin.id)
-    if(current_input.length == 0){
-      to_add.id = 'input_field'+ id_origin.id + 1
-    }
-    else{
-      cur_num_class = current_input[current_input.length-1].id
-      cur_num = cur_num_class[cur_num_class.length - 1]
-      console.log(cur_num)
-      to_add.id =  'input_field' + id_origin.id + (Number(cur_num)+1)
-    }
-    to_add.innerHTML = `<div class="d-flex ">
-            <span class="textarea" contenteditable "></span><span style='margin: 5px;' class='fa fa-trash' onclick=removeFormField(${to_add.id})></span>
-            </div><br>`
-    div_element = document.getElementById(id2)
-    div_element.appendChild(to_add)
-  }
-
-function removeFormField(id) {
-  document.getElementById(id.id).remove()
-}
-
-function addCheckbox(id) {
-
-  id_origin = id
-  id = id.id
-  id2 = id.slice(0,id.length-1) +'2'
-  to_add = document.createElement('div')
-  to_add.className = 'check_field' + id_origin.id
   
-    current_input = document.getElementsByClassName('check_field'+id_origin.id)
-    if(current_input.length == 0){
-      to_add.id = 'check_field'+ id_origin.id + 1
-    }
-    else{
-      cur_num_class = current_input[current_input.length-1].id
-      cur_num = cur_num_class[cur_num_class.length - 1]
-      console.log(cur_num)
-      to_add.id =  'check_field' + id_origin.id + (Number(cur_num)+1)
-    }
-    console.log(to_add.id)
-    to_add.innerHTML = to_add.innerHTML = `<div class="d-flex "> 
-                  <input class="form-check-input" type="checkbox" value="" id="defaultCheck1" style="display:inline-block";><span class="textarea"  contenteditable ></span>
-                  <span style="margin:5px;" class='fa fa-trash' onclick=removeFormField(${to_add.id})></span>
-                  </div><br>`
-    div_element = document.getElementById(id2)
-    div_element.appendChild(to_add)
+  }
   }
 
-function removeCheckBox(id2) {
-$(id2.id).remove();
-}
+// function addFormField(id) {
+//     console.log(id)
+//     id_origin = id
+//     id = id.id
+//     id2 = id.slice(0,id.length-1) +'2'
+//     to_add = document.createElement('div')
+//     to_add.className = 'input_field' + id_origin.id
+    
+//     current_input = document.getElementsByClassName('input_field' + id_origin.id)
+//     if(current_input.length == 0){
+//       to_add.id = 'input_field'+ id_origin.id + 1
+//     }
+//     else{
+//       cur_num_class = current_input[current_input.length-1].id
+//       cur_num = cur_num_class[cur_num_class.length - 1]
+//       console.log(cur_num)
+//       to_add.id =  'input_field' + id_origin.id + (Number(cur_num)+1)
+//     }
+//     to_add.innerHTML = `<div class="d-flex">
+//             <span class="textarea" contenteditable "></span>
+//             </div><br>`
+//     div_element = document.getElementById(id2)
+//     div_element.appendChild(to_add)
+//   }
 
-// $(document).keypress(function(e) { if(e.keyCode === 13) { e.preventDefault(); return false; } });
-// Dealing with Input width
+// function removeFormField(id) {
+//   document.getElementById(id.id).remove()
+// }
+
+
+// note  on enter
 let el = document.querySelector(".input-wrap .input");
 let widthMachine = document.querySelector(".input-wrap .width-machine");
 el.addEventListener("keyup", () => {
@@ -706,46 +722,130 @@ textarea.addEventListener("keyup", () => {
   textarea.style.height = calcHeight(textarea.value) + "px";
 });
 
+//side bar
+$("#menu-toggle").click(function(e) {
+  e.preventDefault();
+  $("#wrapper").toggleClass("toggled");
+});
+$("#menu-toggle-2").click(function(e) {
+  e.preventDefault();
+  $("#wrapper").toggleClass("toggled-2");
+  $('#menu ul').hide();
+});
+
+function initMenu() {
+  $('#menu ul').hide();
+  $('#menu ul').children('.current').parent().show();
+  //$('#menu ul:first').show();
+  $('#menu li a').click(
+     function() {
+        var checkElement = $(this).next();
+        if ((checkElement.is('ul')) && (checkElement.is(':visible'))) {
+           return false;
+        }
+        if ((checkElement.is('ul')) && (!checkElement.is(':visible'))) {
+           $('#menu ul:visible').slideUp('normal');
+           checkElement.slideDown('normal');
+           return false;
+        }
+     }
+  );
+}
+$(document).ready(function() {
+  initMenu();
+});
+
+
+
 //add
 function saveData(){
+  obj = {}
   let places_list = document.getElementsByClassName('place_info')
   for(item of places_list){
+    console.log(item)
     places = item.getElementsByClassName('container')
     for(place of places){
-      console.log(place.getElementsByClassName('getAllVal')[0])
       let val = place.getElementsByClassName('getAllVal')[0].innerHTML
       let val_list = val.split(',')
       let id = val_list[0]
       let id_rep = val_list[1]
+      let id_notes = id_rep.slice(0,id_rep.length-3) + 'notes2'
+      console.log(document.getElementById(id_notes).innerHTML)
+      let note_text = document.getElementById(id_notes).innerHTML
+      console.log(note_text)
+
       let name = val_list[2]
       let lati = val_list[3]
       let lng = val_list[4]
       let picture_url = val_list[5]
-      let track = val_list[6]
-      console.log(picture_url)
+      let tracker = val_list[6]
+      console.log(id_rep)
+      console.log(id_rep.slice(0,id_rep.length-3)+"budget")
+      console.log(document.getElementById(id_rep.slice(0,id_rep.length-3)+"budget"))
+      let budget = document.getElementById(id_rep.slice(0,id_rep.length-3)+"budget").value
+      let time = document.getElementById(id_rep.slice(0,id_rep.length-3)+"time").value
+  
+      if(obj[tracker] != undefined){
+        obj[tracker].push({
+          id : id,
+          id_rep : id_rep,
+          name : name,
+          lati: lati,
+          lng : lng,
+          picture_url : picture_url,
+          tracking : tracker,
+          budget: budget,
+          time: time,
+          note_text : note_text
+        })
+        
+      }
+      else{
+        obj[tracker] = [{
+          id : id,
+          id_rep : id_rep,
+          name : name,
+          lati: lati,
+          lng : lng,
+          picture_url : picture_url,
+          tracking : tracker,
+          budget: budget,
+          time: time,
+          note_text : note_text
+        }]
+      }   
+      }
     }
-  }
-}
-
-//get name,id,id_rep,track_num(track the accordion position)
-// <div hidden class='getAllVal'>${id},${id_rep+'row'},${name},${lati},${lng},${picture_url},${track}</div>
-
-//The following writes the data
-function writeUserDataWithCompletion(id, selected_country, selected_city, start_date, end_date, departure_flight, arrival_flight, hotel) {
-  firebase.database().ref('users/' + localStorage.getItem('uid') + '/trip/' + id).set({
-      country: selected_country,
-      city: selected_city,
-      startdate: start_date,
-      enddate: end_date,
-      departureflight: arrival_flight,
-      arrivalflight: departure_flight,
-      hotel: hotel,
-  }, function (error) {
+    console.log(obj)
+    firebase.database().ref('users/' + localStorage.getItem('uid') + '/trip/' + '/'+trip_id+'/' + '/destination_info/').set( obj, function (error) {
       if (error) {
           console.log("Add Data Failed!");
       } else {
           console.log("Add Data Done!");
-          window.location.href = 'restrictions.html'
       }
   });
+  }
+
+
+//get name,id,id_rep,track_num(track the accordion position)
+// <div hidden class='getAllVal'>${id},${id_rep+'row'},${name},${lati},${lng},${picture_url},${track}</div>
+
+
+function empty(){
+  firebase.database().ref('users/' + localStorage.getItem('uid') + '/trip/' + '/'+trip_id+'/' + '/destination_info').set({})
 }
+function getData(){
+  console.log(document.getElementsByClassName('place_info'))
+}
+
+//logout 
+let logout = document.getElementById('logout') 
+logout.addEventListener('click', logout1) 
+function logout1() { 
+    localStorage.removeItem('uid') 
+    sessionStorage.setItem('logout', true) 
+    window.location.href = '../index.html' 
+};
+
+
+
